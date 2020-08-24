@@ -45,9 +45,10 @@ void Player::search_ship(int board[10][10], int ship[], int ship_size) {
 	int* current_base;
 	for (int y = 0; y < 10; y++) {
 		for (int x = 0; x < 10; x++) {
+			//cout << "Base: (" << x << "," << y << ")" << endl;
 			//Check to see if sideways is within bounds
-			if (x + ship_size-1 < 10) {
-				
+			if (x + ship_size - 1 < 10) {
+
 				//If within bounds, get the array of the size of the ship
 				current_base = new int[ship_size];
 				//cout << "Current_Base[" << x << "][" << y << "]: ";
@@ -66,21 +67,26 @@ void Player::search_ship(int board[10][10], int ship[], int ship_size) {
 				}
 				//If the location remains a possibility, add one to the possible locations and increment the temp probability board
 				if (possible) {
-					cout << "Posibility Pre: " << possible_locations << endl;
+					//cout << "Posibility 1: " << possible_locations << endl;
 					possible_locations++;
-					cout << "Posibility Post: " << possible_locations << endl;
-					for (int i = 0; i <= ship_size; i++) {
+					//cout << "Posibility 2: " << possible_locations << endl;
+
+					for (int i = 0; i < ship_size; i++) {
 						temp_probability_board[x + i][y]++;
+						//cout << "Posibility 2.5: " << possible_locations << endl;
 					}
+					//cout << "Posibility 3: " << possible_locations << endl;
 				}
+
 			}
-			/*
+			//cout << "Posibility 4: " << possible_locations << endl;
+
 			//Check to see if up/down is within bounds
 			if (y + ship_size < 10) {
 				//If within bounds, get the array of the size of the ship
 				current_base = new int[ship_size];
 				for (int i = 0; i < ship_size; i++) {
-					current_base[i] = board[x][y+i];
+					current_base[i] = board[x][y + i];
 				}
 				//Sort the array and compare to the ship array
 				sort_array(current_base, ship_size);
@@ -94,12 +100,12 @@ void Player::search_ship(int board[10][10], int ship[], int ship_size) {
 				if (possible) {
 					possible_locations++;
 					for (int i = 0; i < ship_size; i++) {
-						temp_probability_board[x][y+i]++;
+						temp_probability_board[x][y + i]++;
 					}
 				}
 			}
 
-			//Check to see if diagnal down is within bounds
+			//Check to see if diagnal down right is within bounds
 			if ((x + ship_size < 10) && (y + ship_size < 10)) {
 				//If within bounds, get the array of the size of the ship
 				current_base = new int[ship_size];
@@ -122,11 +128,60 @@ void Player::search_ship(int board[10][10], int ship[], int ship_size) {
 					}
 				}
 			}
-			*/
+			//Check to see if diagonal down left is within bounds
+			if ((x - ship_size >= 0) && (y + ship_size < 10)) {
+				//If within bounds, get the array of the size of the ship
+				current_base = new int[ship_size];
+				for (int i = 0; i < ship_size; i++) {
+					current_base[i] = board[x - i][y + i];
+				}
+				//Sort the array and compare to the ship array
+				sort_array(current_base, ship_size);
+				bool possible = true;
+				for (int i = 0; i < ship_size; i++) {
+					if (current_base[i] != ship[i]) {
+						possible = false;
+					}
+				}
+				//If the location remains a possibility, add one to the possible locations and increment the temp probability board
+				if (possible) {
+					possible_locations++;
+					for (int i = 0; i < ship_size; i++) {
+						temp_probability_board[x - i][y + i]++;
+					}
+				}
+			}
 		}
 	}
-	print_board(temp_probability_board);
+	//cout << "Total Possibilities: " << possible_locations << endl;
+	for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 10; y++) {
+			probability_board[x][y] += (double)temp_probability_board[x][y] / possible_locations;
+		}
+	}
+	print_board(probability_board);
 	cout << "Total Possibilities: " << possible_locations << endl;
+}
+
+void Player::search(int board[10][10]) {
+	for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 10; y++) {
+			probability_board[x][y] = 0;
+		}
+	}
+	if (battleship[4] == 0) {
+		search_ship(board, battleship, 5);
+	}
+	if (cruiser[3] == 0) {
+		search_ship(board, cruiser, 4);
+	}
+	if (destroyer[2] == 0) {
+		search_ship(board, destroyer, 3);
+	}
+	if (sub[1] == 0) {
+		search_ship(board, sub, 2);
+	}
+	print_board(probability_board);
 }
 
 void Player::print_board(int board[10][10]) {
@@ -142,6 +197,23 @@ void Player::print_board(int board[10][10]) {
 			}
 		}
 		cout << endl;
+	}
+}
+
+void Player::print_board(double board[10][10]) {
+	//cout.precision(2);
+	for (int y = 0; y < 10; y++) {
+		cout << "[";
+		for (int x = 0; x < 10; x++) {
+			cout << std::fixed << std::setprecision(2) << board[x][y];
+			if (x < 9) {
+				cout  << " , ";
+			}
+			else {
+				cout << "]";
+			}
+		}
+		cout << endl << endl;
 	}
 }
 

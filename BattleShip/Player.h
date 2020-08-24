@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 class Player
@@ -14,6 +15,8 @@ public:
 	void search_for_battleship(int current_board[10][10]);
 	void sort_array(int a[], int size);
 	void search_ship(int board[10][10], int ship[], int ship_size);
+	void search(int board[10][10]);
 	void print_board(int board[10][10]);
+	void print_board(double board[10][10]);
 };
 

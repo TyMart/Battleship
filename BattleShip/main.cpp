@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "Player.h"
 using namespace std;
 
@@ -11,7 +12,8 @@ int main() {
 	}
 	Player me;
 	//board[1][1] = 1;
-	board[9][2] = 1;
+	board[1][1] = 1;
+	board[2][2] = 0;
 	//me.print_board(board);
 
 	cout << endl << endl;
